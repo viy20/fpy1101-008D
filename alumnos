@@ -1,0 +1,128 @@
+
+import csv
+from random import *
+
+alumnos=[]
+     
+id=randint(1,100)
+
+def media_geométrica_manual(data):
+    producto = 1
+    for valor in data:
+        producto *= valor
+    return producto ** (1 / len(data))
+
+def id_inicial():
+    global id
+    id +=1
+    return id
+
+def agregar():
+    print("agregar alumno")
+    id_estu = id_inicial()
+    nombre=input("ingres el nombre: ")
+    try:
+        curso=int(input("ingrese el numero de curso"))
+        edad=int(input("ingrese la edad"))
+    except ValueError:
+        print("ingrese un valor valido")
+    lista=[id_estu,nombre,curso,edad]
+    alumnos.append(lista)
+
+    with open ("lista_alumnos.csv","w", newline="") as archivo_csv:
+        escritor_csv = csv.writer(archivo_csv)
+        escritor_csv.writerow(["id_estu","nombre","curso","edad"])
+        escritor_csv.writerows(alumnos)
+        
+    print("alumno agregado")
+
+def eliminar():
+    global alumnos
+    print("elimniar alumno")
+    id_estu=input("ingrese el id a buscar: ")
+    alumnos = [alumno for alumno in alumnos if alumno[0] != id_estu]
+    with open ("lista_alumnos.csv","w", newline="") as archivo_csv:
+        escritor_csv = csv.writer(archivo_csv)
+        escritor_csv.writerow(["id_estu","nombre","curso","edad"])
+        escritor_csv.writerows(alumnos)
+    print("alumno eliminado")
+
+def buscar():
+    global alumnos
+    print("buscar alumno")
+    id_estu=input("ingrese el id a buscar")
+    for id in alumnos:
+        if id[0]== id_estu:
+            print(f"id:{id[0]}\n nombre:{id[1]}\n curso:{id[2]}\n edad:{id[3]}")
+            print("alumno encontrado")
+        else:
+            print("alumno no encontrado")
+
+def listar():
+    print("lista de alumnos")
+    columnas=["id","nombre","curso","edad"]
+    print("{:<5} {:<10} {:<10} {:<5}".format(*columnas))
+    for alumno in alumnos:
+        print("{:<5} {:<10} {:<10} {:<5}".format(alumno[0], alumno[1], alumno[2], alumno[3]))
+
+def notas():
+    print("notas de alumnos y promedio")
+    alumno=input("ingrese el nombre del alumno:")
+    curso=input("ingrese el curso: ")
+    notas = input("Ingrese las notas separadas por espacios: ")
+
+    lista_notas = [float(nota) for nota in notas.split()]
+
+
+    promedio = sum(lista_notas) / len(lista_notas)  # Calcular el promedio
+    print(f"alumno: {alumno}")
+    print(f"curso: {curso}")
+    print(f"notas: {lista_notas}")
+    print(f"promedio: {promedio:.1f}")
+    #guardar notas en un archivo txt
+    with open("notas.txt", "w") as archivo:
+        archivo.write(f"{alumno}\t {curso}")
+        archivo.write("\n notas:\n")
+        for nota in notas:
+            archivo.write(f"{nota}")
+        archivo.write(f"\npromedio:{promedio:.1f}")
+        
+    with open("notas.txt","r")as archivo:
+        contenido = archivo.read()
+        print("Contenido del archivo:")
+        print(contenido)
+
+
+
+def menu():
+    validar=True
+    while validar:
+        print("menu")
+        print("1. agregar estudiante")
+        print("2. eliminar estudiantes")
+        print("3. buscar por id")
+        print("4. listar estudiantes")
+        print("5. agregar notas y sacar promedio")
+        print("6. salir")
+        try:
+            opc=input("ingrece una opcion:")
+        except ValueError:
+            print("ingrese un numero valido")
+
+        if opc=="1":
+            agregar()
+        elif opc=="2":
+            eliminar()
+        elif opc=="3":
+            buscar()
+        elif opc=="4":
+            listar()
+        elif opc=="5":
+            notas()
+        elif opc=="6":
+            print("muchas gracias por usar este programa")
+            validar=False
+        else:
+            print("opcion invalida")
+
+menu()
